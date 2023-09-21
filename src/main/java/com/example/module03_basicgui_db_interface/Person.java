@@ -2,6 +2,8 @@ package com.example.module03_basicgui_db_interface;
 
 public class Person {
 
+    //add a field for each column in the table
+
     private Integer id;
     private String firstName;
     private String lastName;
