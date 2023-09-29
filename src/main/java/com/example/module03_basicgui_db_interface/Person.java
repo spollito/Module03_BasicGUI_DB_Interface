@@ -2,7 +2,6 @@ package com.example.module03_basicgui_db_interface;
 
 public class Person {
 
-    //add a field for each column in the table
 
     private Integer id;
     private String firstName;
@@ -22,7 +21,6 @@ public class Person {
         this.dept = dept;
     }
 
-    // fix the getters and setters to match the fields
 
     public Integer getId() {
         return id;
@@ -64,7 +62,7 @@ public class Person {
         return dept;
     }
 
-    public void setDept(String minor) {
+    public void setDept(String dept) {
         this.dept = dept;
     }
 

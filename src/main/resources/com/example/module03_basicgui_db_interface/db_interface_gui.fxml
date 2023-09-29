@@ -26,7 +26,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
+                    <MenuItem mnemonicParsing="false" text="Close" onAction="#closeApplication"/>
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
@@ -34,7 +34,7 @@
                     <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Coneection">
+                <Menu mnemonicParsing="false" text="NewMenuItem">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />
                   </items>
@@ -53,7 +53,7 @@
             </MenuBar>
          </top>
          <right>
-            <TableView fx:id="tv" prefHeight="501.0" prefWidth="507.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="tv" prefHeight="501.0" prefWidth="507.0" BorderPane.alignment="CENTER" onMouseClicked="#selectedItemTV">
               <columns>
                 <TableColumn fx:id="tv_id" prefWidth="32.0" text="ID" />
                 <TableColumn fx:id="tv_fn" prefWidth="87.0" text="First Name" />

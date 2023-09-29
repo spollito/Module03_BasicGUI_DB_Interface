@@ -8,7 +8,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -59,10 +61,71 @@ public class DB_GUI_Controller implements Initializable {
 
         data.add(new Person(
                 data.size()+1,
-                "Moaath",
-                "Alrajab",
-                "CPIS", "CS"
+                first_name.getText(),
+                last_name.getText(),
+                department.getText(),
+                major.getText()
         ));
     }
 
+    @FXML
+    protected void clearForm() {
+        first_name.clear();
+        last_name.setText("");
+        department.setText("");
+        major.setText("");
+    }
+
+    @FXML
+    protected void closeApplication() {
+        System.exit(0);
+    }
+
+
+    @FXML
+    protected void editRecord() {
+        Person p= tv.getSelectionModel().getSelectedItem();
+        int c=data.indexOf(p);
+        Person p2= new Person();
+        p2.setId(c+1);
+        p2.setFirstName(first_name.getText());
+        p2.setLastName(last_name.getText());
+        p2.setDept(department.getText());
+        p2.setMajor(major.getText());
+        data.remove(c);
+        data.add(c,p2);
+        tv.getSelectionModel().select(c);
+    }
+
+    @FXML
+    protected void deleteRecord() {
+        Person p= tv.getSelectionModel().getSelectedItem();
+        data.remove(p);
+    }
+
+
+
+    @FXML
+    protected void showImage() {
+        File file= (new FileChooser()).showOpenDialog(img_view.getScene().getWindow());
+        if(file!=null){
+            img_view.setImage(new Image(file.toURI().toString()));
+
+        }
+    }
+
+
+
+
+
+    @FXML
+    protected void selectedItemTV(MouseEvent mouseEvent) {
+        Person p= tv.getSelectionModel().getSelectedItem();
+        first_name.setText(p.getFirstName());
+        last_name.setText(p.getLastName());
+        department.setText(p.getDept());
+        major.setText(p.getMajor());
+
+
+    }
 }
