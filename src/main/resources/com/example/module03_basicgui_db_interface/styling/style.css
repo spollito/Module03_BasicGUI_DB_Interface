@@ -12,13 +12,13 @@
 }
 
 .left_pane {
-    -fx-background-color:#f88;
+    -fx-background-color: rgba(63, 73, 241, 0.2);
     -fx-pref-width:150px;
     -fx-pref-height:600px;
 }
 
 .bottom_pane {
-    -fx-background-color:#f88;
+    -fx-background-color: rgba(63, 73, 241, 0.2);
 }
 .profile_pic{
     -fx-stroke: #dedddc;

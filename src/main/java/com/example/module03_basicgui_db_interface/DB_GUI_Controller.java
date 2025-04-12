@@ -4,128 +4,157 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.FileChooser;
+import com.example.module03_basicgui_db_interface.db.ConnDbOps;
 
-import java.io.File;
-import java.io.IOException;
+import javax.swing.text.html.ImageView;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 public class DB_GUI_Controller implements Initializable {
+    private final ConnDbOps dbOps = new ConnDbOps();
+    private final ObservableList<Person> data = FXCollections.observableArrayList();
 
-    private final ObservableList<Person> data =
-            FXCollections.observableArrayList(
-                    new Person(1, "Jacob", "Smith", "CPIS", "CS"),
-                    new Person(2, "Jacob2", "Smith1", "CPIS1", "CS")
-
-            );
+    @FXML
+    private ImageView profileImageView;
 
 
     @FXML
-    TextField first_name, last_name, department, major;
+    private TextField nameField, emailField, phoneField, addressField, passwordField;
+
     @FXML
     private TableView<Person> tv;
+
     @FXML
     private TableColumn<Person, Integer> tv_id;
-    @FXML
-    private TableColumn<Person, String> tv_fn, tv_ln, tv_dept, tv_major;
 
     @FXML
-    ImageView img_view;
+    private TableColumn<Person, String> tv_name, tv_email, tv_phone, tv_address, tv_password;
 
+
+    private boolean isDarkMode = false;
+    private Scene scene;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tv_id.setCellValueFactory(new PropertyValueFactory<>("id"));
-        tv_fn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        tv_ln.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        tv_dept.setCellValueFactory(new PropertyValueFactory<>("dept"));
-        tv_major.setCellValueFactory(new PropertyValueFactory<>("major"));
+        tv_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tv_email.setCellValueFactory(new PropertyValueFactory<>("email"));
+        tv_phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        tv_address.setCellValueFactory(new PropertyValueFactory<>("address"));
+        tv_password.setCellValueFactory(new PropertyValueFactory<>("password"));
 
 
+
+        data.addAll(dbOps.getAllPersons());
         tv.setItems(data);
-    }
 
+        applyTheme(false);
 
-    @FXML
-    protected void addNewRecord() {
-
-
-        data.add(new Person(
-                data.size()+1,
-                first_name.getText(),
-                last_name.getText(),
-                department.getText(),
-                major.getText()
-        ));
     }
 
     @FXML
-    protected void clearForm() {
-        first_name.clear();
-        last_name.setText("");
-        department.setText("");
-        major.setText("");
+    private void toggleTheme() {
+        isDarkMode = !isDarkMode;  // Toggle the theme state
+        applyTheme(isDarkMode);
     }
 
-    @FXML
-    protected void closeApplication() {
-        System.exit(0);
-    }
+    private void applyTheme(boolean darkMode) {
+        Scene scene = tv.getScene();  // Get scene from any FXML element
+        if (scene != null) {
+            scene.getStylesheets().clear();  // Clear existing stylesheets
 
+            String themePath = darkMode ? "styling/dark-theme.css" : "styling/light-theme.css";
+            URL resourceUrl = getClass().getResource(themePath);
 
-    @FXML
-    protected void editRecord() {
-        Person p= tv.getSelectionModel().getSelectedItem();
-        int c=data.indexOf(p);
-        Person p2= new Person();
-        p2.setId(c+1);
-        p2.setFirstName(first_name.getText());
-        p2.setLastName(last_name.getText());
-        p2.setDept(department.getText());
-        p2.setMajor(major.getText());
-        data.remove(c);
-        data.add(c,p2);
-        tv.getSelectionModel().select(c);
-    }
+            if (resourceUrl == null) {
+                System.err.println("Theme file not found: " + themePath);
+                return;
+            }
 
-    @FXML
-    protected void deleteRecord() {
-        Person p= tv.getSelectionModel().getSelectedItem();
-        data.remove(p);
-    }
-
-
-
-    @FXML
-    protected void showImage() {
-        File file= (new FileChooser()).showOpenDialog(img_view.getScene().getWindow());
-        if(file!=null){
-            img_view.setImage(new Image(file.toURI().toString()));
-
+            try {
+                scene.getStylesheets().add(resourceUrl.toExternalForm());
+            } catch (Exception e) {
+                System.err.println("Failed to load theme: " + e.getMessage());
+            }
         }
     }
 
 
 
+    @FXML
+    protected void addNewRecord() {
+        Person newPerson = new Person(
+                null,
+                nameField.getText(),
+                emailField.getText(),
+                phoneField.getText(),
+                addressField.getText(),
+                passwordField.getText()
+        );
 
+        dbOps.insertPerson(newPerson);
+        data.clear();
+        data.addAll(dbOps.getAllPersons());
+        clearForm();
+    }
+
+    @FXML
+    protected void clearForm() {
+        nameField.clear();
+        emailField.clear();
+        phoneField.clear();
+        addressField.clear();
+        passwordField.clear();
+    }
+
+    @FXML
+    protected void editRecord() {
+        Person selectedPerson = tv.getSelectionModel().getSelectedItem();
+        if (selectedPerson != null) {
+            Person updatedPerson = new Person(
+                    selectedPerson.getId(),
+                    nameField.getText(),
+                    emailField.getText(),
+                    phoneField.getText(),
+                    addressField.getText(),
+                    passwordField.getText()
+            );
+
+            dbOps.updatePerson(updatedPerson);
+            data.clear();
+            data.addAll(dbOps.getAllPersons());
+        }
+    }
+
+    @FXML
+    protected void deleteRecord() {
+        Person selectedPerson = tv.getSelectionModel().getSelectedItem();
+        if (selectedPerson != null) {
+            dbOps.deletePerson(selectedPerson.getId());
+            data.remove(selectedPerson);
+        }
+    }
 
     @FXML
     protected void selectedItemTV(MouseEvent mouseEvent) {
-        Person p= tv.getSelectionModel().getSelectedItem();
-        first_name.setText(p.getFirstName());
-        last_name.setText(p.getLastName());
-        department.setText(p.getDept());
-        major.setText(p.getMajor());
+        Person p = tv.getSelectionModel().getSelectedItem();
+        if (p != null) {
+            nameField.setText(p.getName());
+            emailField.setText(p.getEmail());
+            phoneField.setText(p.getPhone());
+            addressField.setText(p.getAddress());
+            passwordField.setText(p.getPassword());
+        }
+    }
 
-
+    @FXML
+    protected void closeApplication() {
+        System.exit(0);
     }
 }

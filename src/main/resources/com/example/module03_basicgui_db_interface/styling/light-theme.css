@@ -1,0 +1,35 @@
+.root {
+    -fx-background-color: #f4f4f4;
+    -fx-text-fill: #000000;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.table-view .column-header {
+    -fx-background-color: #e8e8e8;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.button {
+    -fx-background-color: #e8e8e8;
+    -fx-text-fill: black;
+}
+
+.menu-bar {
+    -fx-background-color: #e8e8e8;
+}
+
+.menu-item {
+    -fx-background-color: white;
+}
+
+.left_pane {
+    -fx-background-color: #e8e8e8;
+}
